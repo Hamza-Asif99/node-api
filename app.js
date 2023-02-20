@@ -20,6 +20,12 @@ app.use('/employee', employeeRoutes)
 
 //error handler
 app.use((err, req, res, next) => {
+
+    //if user tries to assign an already existing id to a new employee
+    // this error is thrown
+    if(err.code == '11000'){
+        res.status(400).send({error:"This ID already exists"})
+    }
     console.error(err.stack)
     res.status(500).send('Something broke!')
 })
