@@ -1,92 +1,99 @@
 const Employee = require("../models/employeeSchema");
 
-function getAllEmployees (req,res,next){
-    Employee.find(function(err,data){
-        if(err){
-            next(err)
-        }else{
-            res.json(data)
-        }
-    })
+async function getAllEmployees (req,res,next){
+    try{
+        let data = await Employee.find({})
+        res.json(data)
+    }catch(err){
+        next(err)
+    }
 }
 
-function addEmployee (req,res,next){
+async function addEmployee (req,res,next){
     let data = req.body
-    Employee.insertMany(data,function(err,docs){
-        if(err){
-            next(err)
-        }else{
-            res.json({success:docs})
-        }
-    })
+    try{
+        let doc = await Employee.insertMany(data)
+        res.json({success:"Doc added "+doc})
+    }catch(err){
+        next(err)
+    }
 }
 
 async function updateEmployee(req,res,next){
     let data = req.body
 
-    //find employee matching the params id and update it
-    // the {new:true} parameter is used to return the updated doc instead of the original one
-    Employee.findOneAndUpdate({empID: req.params.id},data,{new:true},function(err,doc){
-        if(err){
-            next(err)
-        }
-        else if(doc == null) {
-            res.status(404).send("Employee not found")
+    try{
+        //find employee matching the params id and update it
+        // the {new:true} parameter is used to return the updated doc instead of the original one
+        let doc = await Employee.findOneAndUpdate({empID:req.params.id}, data , {new:true})
+        if(!doc){
+            res.status(400).send({error:"Employee could not be found"})
         }
         else{
             res.json({success:"Updated successfully"})
         }
-    })
 
+    }catch(err){
+        next(err)
+    }
 }
 
-function getEmployee(req,res,next){
+async function getEmployee(req,res,next){
     let searchedID= req.params.id
+    console.log(searchedID)
 
-    Employee.findOne({empID: searchedID},function(err,data){
-        if(err){
-            next(err)
-        }
-        else if(data == null) {
-            res.status(404).send("Employee not found")
-        }else{
-            res.json(data)
-        }
-    })
-}
-
-function deleteEmployee(nreq,res,next){
-    let toDelete = req.params.id
-
-    Employee.deleteOne({empID:toDelete},function(err,data){
-        if(err){
-            next(err)
-        }
-            //the deleteOne method gives back a object with deletedCount attribute
-            // if it is equal to 0, that means the document was not found
-        // and hence could not be deleted
-        else if(data.deletedCount == 0) {
-            res.status(404).send("Employee not found")
-        }else{
-            res.json(data)
-        }
-    })
-}
-
-function getDepartmentEmployees(req,res,next){
-    let dept = req.params.dept
-    console.log(dept)
-    Employee.find({empDept:dept},function(err,data){
-        if(err){
-            next(err)
-        }
-        else if(!data){
-            res.status(404).json({error:"Department Number Invalid"})
+    try{
+        let data = await Employee.findOne({empID: searchedID})
+        console.log(data)
+        if(!data){
+            res.status(400).send({error:"Employee could not be found"})
         }
         else{
-            res.json({success:" Records Fetched"+data})
+            res.status(200).json({success:"Data Fetched Successfully "+data})
         }
-    })
+    }catch(err){
+        next(err)
+    }
+}
+
+async function deleteEmployee(req,res,next){
+    let toDelete = req.params.id
+
+    try{
+        let data = await Employee.deleteOne({empID:toDelete})
+
+        //the deleteOne method gives back a object with deletedCount attribute
+        // if it is equal to 0, that means the document was not found
+        // and hence could not be deleted
+        if(!data.deletedCount){
+            res.status(400).send("Employee Not Found")
+        }
+        else{
+            res.status(200).json({success:"Employee deleted Successfully"})
+        }
+    }catch(err){
+        next(err)
+    }
+
+}
+
+async function getDepartmentEmployees(req,res,next){
+    let dept = req.params.dept
+    console.log(dept)
+
+    try{
+        let data = await Employee.find({empDept:dept})
+        console.log(data)
+        if(!data.length){
+            res.status(400).json({error:"Dept number invalid"})
+        }
+        else{
+            res.status(200).json({success:"Records Fetched "+data})
+        }
+
+    }catch(err){
+        next(err)
+    }
 }
 
 module.exports = {
