@@ -3,7 +3,7 @@ const employeeRouter = express.Router()
 const employeeController = require('../controllers/employeeController')
 
 //get all employees
-//an experimental route to see how it effects performance
+
 employeeRouter.get('/allEmployees',employeeController.getAllEmployees)
 
 //add a new employee
