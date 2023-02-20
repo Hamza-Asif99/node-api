@@ -1,11 +1,9 @@
 const express = require('express')
 const employeeRouter = express.Router()
-
 const Employee = require('../models/employeeSchema')
-const {Error} = require("mongoose");
-
 
 //get all employees
+//an experimental route to see how it effects performance
 employeeRouter.get('/allEmployees',function (req,res,next){
     Employee.find(function(err,data){
         if(err){
@@ -15,6 +13,7 @@ employeeRouter.get('/allEmployees',function (req,res,next){
         }
     })
 })
+
 //add a new employee
 employeeRouter.post('/addEmployee',function(req,res,next){
     let data = req.body
@@ -30,6 +29,8 @@ employeeRouter.post('/addEmployee',function(req,res,next){
 employeeRouter.put('/editEmployee/:id',async function (req,res,next){
     let data = req.body
 
+    //find employee matching the params id and update it
+    // the {new:true} parameter is used to return the updated doc instead of the original one
     Employee.findOneAndUpdate({empID: req.params.id},data,{new:true},function(err,doc){
         if(err){
             next(err)
@@ -46,7 +47,6 @@ employeeRouter.put('/editEmployee/:id',async function (req,res,next){
 //get specific employee with their id
 employeeRouter.get('/getEmployee/:id',function(req,res,next){
     let searchedID= req.params.id
-    console.log(searchedID)
 
     Employee.findOne({empID: searchedID},function(err,data){
         if(err){
@@ -57,7 +57,7 @@ employeeRouter.get('/getEmployee/:id',function(req,res,next){
         }else{
             res.json(data)
         }
-    })
+    }).explain("executionStats")
 })
 
 //delete an employee with their id
@@ -68,6 +68,9 @@ employeeRouter.delete('/deleteEmployee/:id',function(req,res,next){
         if(err){
             next(err)
         }
+        //the deleteOne method gives back a object with deletedCount attribute
+            // if it is equal to 0, that means the document was not found
+            // and hence could not be deleted
         else if(data.deletedCount == 0) {
             res.status(404).send("Employee not found")
         }else{
