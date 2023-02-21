@@ -1,22 +1,8 @@
-
-const ERROR_CODES={
-    //mongoose duplicate primary key error code
-    DUPLICATE: {
-        value:"11000",
-        message:"This ID already exists"
-    },
-    //100 series code dealing with invalid ids
-    EMP_ID_NOT_FOUND:{
-        value:"100",
-        message:"Employee with this ID not found"
-    },
-    DEPT_ID_NOT_FOUND:{
-        value :"101",
-        message: "Department with this ID not found"
-    }
-}
+const {ERROR_CODES} = require('./error_codes')
 
 function errorHandler(err, req, res, next){
+
+    console.log(ERROR_CODES)
     //if user tries to assign an already existing id to a new employee
     // this error is thrown
     if(err.code){

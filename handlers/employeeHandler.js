@@ -1,12 +1,18 @@
 const Employee = require("../models/employeeSchema");
 const checkDepartmentValidity = require("../helpers/checkDepartmentValidity");
+const {ERROR_CODES} = require('../utils/error_codes')
 
-async function handleGetAllEmployees(){
+async function handleGetAllEmployees(page, limit){
 
     let data ={}
     try{
         //using Model.find() with no filters to fetch all records
+        //set a limit on how many records to fetch at once
+        // skip value determines how many records to skip (not provide in the response)
         data = await Employee.find({})
+            .limit(limit*1)
+            .skip((page-1)*limit)
+
         return data
     }catch(err){
         data.error = err
@@ -42,8 +48,7 @@ async function handleUpdateEmployee(id, data){
             //throwing error with code 100, this code handles "id not found error" (see error handler ERROR_CODES)
 
             result.error = {}
-            result.error.code = "100"
-
+            result.error.code = ERROR_CODES.EMP_ID_NOT_FOUND.value
             return result
         }
         else{
@@ -66,7 +71,8 @@ async function handleGetEmployee(id){
             // let error = new Error()
             //throwing error with code 100, this code handles "id not found error" (see error handler ERROR_CODES)
             result.error = {}
-            result.error.code = "100"
+            result.error.code = ERROR_CODES.EMP_ID_NOT_FOUND.value
+
             return result
         }
         else{
@@ -92,7 +98,8 @@ async function handleDeleteEmployee(id){
         if(!data.deletedCount) {
             //throwing error with code 100, this code handles "id not found error" (see error handler ERROR_CODES)
             data.error = {}
-            data.error.code = "100"
+            // data.error.code = "100"
+            data.error.code = ERROR_CODES.EMP_ID_NOT_FOUND.value
 
         }
         return data
@@ -102,19 +109,20 @@ async function handleDeleteEmployee(id){
     }
 }
 
-async function handleGetDepartmentEmployees(deptID){
+async function handleGetDepartmentEmployees(deptID,page,limit){
     let data = {}
     try{
         //using Model.find with the given filter to only fetch employees of that department
         data = await Employee.find({empDept:deptID})
-
+            .limit(limit*1)
+            .skip((page-1)*limit)
         //checking if the department with given id exists or not
         if(!checkDepartmentValidity(deptID)){
-            let error = new Error()
             //throwing error with code 101, this code is responsible for "department doesn't exist"
             // (see error handler ERROR_CODES)
             data.error = {}
-            data.error.code = "101"
+            // data.error.code = "101"
+            data.error.code = ERROR_CODES.DEPT_ID_NOT_FOUND.value
 
             // next(error)
 

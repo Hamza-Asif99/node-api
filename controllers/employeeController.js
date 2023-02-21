@@ -6,13 +6,28 @@ const employeeHandler = require("../handlers/employeeHandler")
 //an experimental route to see how it effects performance and how to tackle large queries
 async function getAllEmployees (req,res,next){
 
-    let data = await employeeHandler.handleGetAllEmployees()
+    //some default values for the page and limit values in case the user does not provide
+        const {page = 1 , limit= 20} = req.query
+    //check to see if limit values are within a certain bound
+        if(limit > 50 || limit < 10){
+            res.status(400).json({error:"Limit cannot be higher than 50 or lower than 10"})
+        }
 
-    if(data.error){
-        next(data.error)
-    }else{
-        res.status(200).json({success:"Data Fetched Successfully", data: data})
-    }
+        //call the handler if the check pass
+        else{
+            //call handler with the page and limit values
+            let data = await employeeHandler.handleGetAllEmployees(page, limit)
+
+            //if empty data array found, this mean that page number query param is too high
+            if(!data.length){
+                res.status(200).json({message: "No Data Found for this page. Lower page number and try again."})
+            }
+            else if(data.error){
+                next(data.error)
+            }else{
+                res.status(200).json({success:"Data Fetched Successfully", data: data})
+            }
+        }
 
 }
 
@@ -77,17 +92,27 @@ async function deleteEmployee(req,res,next){
 async function getDepartmentEmployees(req,res,next){
     let {id} = req.params
 
-    let data = await employeeHandler.handleGetDepartmentEmployees(id)
+    //some default values for the page and limit values in case the user does not provide
+    const {page = 1 , limit= 20} = req.query
+    //check to see if limit values are within a certain bound
+    if(limit > 50 || limit < 10){
+        res.status(400).json({error:"Limit cannot be higher than 50 or lower than 10"})
+    }
 
-    if(data.error){
-        next(data.error)
-    }
-    //if department is valid and array is empty, that means no employees exist in that department
-    else if(!data.length){
-        res.status(200).json({success:"Add Employees to this department to view their data"})
-    }
     else{
-        res.status(200).json({success:"Records Fetched ", deptEmployees:data})
+
+        let data = await employeeHandler.handleGetDepartmentEmployees(id, page, limit)
+
+        if(data.error){
+            next(data.error)
+        }
+        //if department is valid and array is empty, that means no employees exist in that department
+        else if(!data.length){
+            res.status(200).json({success:"Add Employees to this department to view their data"})
+        }
+        else{
+            res.status(200).json({success:"Records Fetched ", deptEmployees:data})
+        }
     }
 
 }
