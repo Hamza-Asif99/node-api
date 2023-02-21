@@ -1,5 +1,5 @@
-const Employee = require("../models/employeeSchema");
-const checkDepartmentValidity = require("../helpers/checkDepartmentValidity");
+const Employee = require("../models/employee_schema");
+const checkDepartmentValidity = require("../helpers/helper_functions");
 const {ERROR_CODES} = require('../utils/error_codes')
 
 async function handleGetAllEmployees(page, limit){
@@ -121,7 +121,6 @@ async function handleGetDepartmentEmployees(deptID,page,limit){
             //throwing error with code 101, this code is responsible for "department doesn't exist"
             // (see error handler ERROR_CODES)
             data.error = {}
-            // data.error.code = "101"
             data.error.code = ERROR_CODES.DEPT_ID_NOT_FOUND.value
 
             // next(error)

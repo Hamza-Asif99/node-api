@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 
 const {Schema} = mongoose
 
-const employeeSchema = new Schema({
+const employee_schema = new Schema({
     empID: {type:Number, unique:true},
     empName: String,
     empDept: Number,
     empCNIC: String
 })
-module.exports = mongoose.model('Employee',employeeSchema)
+module.exports = mongoose.model('Employee',employee_schema)

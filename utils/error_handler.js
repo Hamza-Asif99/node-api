@@ -2,13 +2,11 @@ const {ERROR_CODES} = require('./error_codes')
 
 function errorHandler(err, req, res, next){
 
-    console.log(ERROR_CODES)
     //if user tries to assign an already existing id to a new employee
     // this error is thrown
     if(err.code){
         err.code = err.code.toString()
     }
-    console.log(err.code)
     switch (err.code){
         case ERROR_CODES.DUPLICATE.value:
             res.status(400).send({error: ERROR_CODES.DUPLICATE.message})
@@ -25,5 +23,5 @@ function errorHandler(err, req, res, next){
     }
 }
 
-// export default errorHandler
+// export default error_handler
 module.exports = errorHandler

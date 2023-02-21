@@ -1,5 +1,5 @@
-const Employee = require("../models/employeeSchema");
-const employeeHandler = require("../handlers/employeeHandler")
+const Employee = require("../models/employee_schema");
+const employeeHandler = require("../handlers/employee_handler")
 
 //function responsible for getting all the employees
 
@@ -33,15 +33,22 @@ async function getAllEmployees (req,res,next){
 
 //function to add an employee
 async function addEmployee (req,res,next){
-    let data = req.body
+    let {body} = req
 
-    let result =  await employeeHandler.handleAddEmployee((data))
-
-    if(result.error){
-        next(result.error)
+    //handle absence of a body
+    if(!Object.keys(body).length){
+        res.status(422).send({message:"Please send employee details"})
     }
     else{
-        res.status(201).json({success:"Data Added"})
+
+        let result =  await employeeHandler.handleAddEmployee((body))
+
+        if(result.error){
+            next(result.error)
+        }
+        else{
+            res.status(201).json({success:"Data Added"})
+        }
     }
 }
 
@@ -50,14 +57,20 @@ async function updateEmployee(req,res,next){
     let {body} = req
     let {id} = req.params
 
-    let result = await employeeHandler.handleUpdateEmployee(id, body)
-
-    if(result.error){
-        next(result.error)
+    //handle absence of a body
+    if(!Object.keys(body).length){
+        res.status(422).send({message:"Please add employee details"})
     }
     else{
-        res.json({success:"Updated successfully"})
+        let result = await employeeHandler.handleUpdateEmployee(id, body)
 
+        if(result.error){
+            next(result.error)
+        }
+        else{
+            res.json({success:"Updated successfully"})
+
+        }
     }
 }
 
