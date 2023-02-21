@@ -19,7 +19,10 @@ const ERROR_CODES={
 function errorHandler(err, req, res, next){
     //if user tries to assign an already existing id to a new employee
     // this error is thrown
-
+    if(err.code){
+        err.code = err.code.toString()
+    }
+    console.log(err.code)
     switch (err.code){
         case ERROR_CODES.DUPLICATE.value:
             res.status(400).send({error: ERROR_CODES.DUPLICATE.message})
