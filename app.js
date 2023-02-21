@@ -1,32 +1,29 @@
 const express = require('express')
 const mongoose = require('mongoose')
 const Employee = require("./models/employeeSchema");
+const config = require("./config/index")
+const errorHandler = require("./utils/errorHandler")
+const catch404 = require("./utils/catch404")
 
 //requiring router
 const employeeRoutes = require('./routes/employeeRoutes').employeeRouter
 
 //connection string
-const connection = mongoose.connect('mongodb://127.0.0.1:27017/task', { useNewUrlParser: true, useUnifiedTopology: true });
+const connection = mongoose.connect(config.dbConfig.connectionString+config.dbConfig.dbName, { useNewUrlParser: true, useUnifiedTopology: true });
 
 let app = express()
 
 app.use(express.json())
 
-app.listen(8080,()=>{
-    console.log("server started on http://127.0.0.1:8080")
+app.listen(config.port,()=>{
+    console.log(`server started on ${config.ip}:${config.port} `)
 })
 
 //all the routes in the employee folder
-app.use('/employee', employeeRoutes)
+app.use('/employees', employeeRoutes)
 
 //error handler
-app.use((err, req, res, next) => {
+app.use(errorHandler)
+//catch all 404
+app.use(catch404)
 
-    //if user tries to assign an already existing id to a new employee
-    // this error is thrown
-    if(err.code == '11000'){
-        res.status(400).send({error:"This ID already exists"})
-    }
-    console.error(err.stack)
-    res.status(500).send('Something broke!')
-})
