@@ -16,7 +16,7 @@ async function getAllEmployees (req,res,next){
 
             let data = await employeeHandler.handleGetAllEmployees(page, limit)
             //if empty data array found, this mean that page number query param is too high
-            if(!data.results || !data.results.length ){
+            if(!data.results.length ){
                 res.status(200).json({message: "No Data Found for this page"})
             }
             else if(data.error){
@@ -102,13 +102,10 @@ async function getDepartmentEmployees(req,res,next){
     let {id} = req.params
 
     //some default values for the page and limit values in case the user does not provide
-    const {page = 1 , limit= 20} = req.query
+    const {page = 1} = req.query
     //check to see if limit values are within a certain bound
-    if(limit > 50 || limit < 10){
-        res.status(400).json({error:"Limit cannot be higher than 50 or lower than 10"})
-    }
 
-    else{
+        let limit = 20
 
         let data = await employeeHandler.handleGetDepartmentEmployees(id, page, limit)
 
@@ -116,13 +113,12 @@ async function getDepartmentEmployees(req,res,next){
             next(data.error)
         }
         //if department is valid and array is empty, that means no employees exist in that department
-        else if(!data.length){
-            res.status(200).json({success:"Add Employees to this department to view their data"})
+        else if(!data.results.length){
+            res.status(200).json({message:"No Data Found for this page"})
         }
         else{
             res.status(200).json({success:"Records Fetched ", data:data})
         }
-    }
 
 }
 

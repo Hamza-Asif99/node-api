@@ -7,36 +7,23 @@ async function handleGetAllEmployees(page, limit ){
     let data ={}
     try{
 
-        let totalRecords = await Employee.find()
-            .count()
-
-        let totalPages = totalRecords / limit
-
-        data.nextPage = parseInt(page)
-        console.log(Math.ceil(totalPages))
-
-        if(data.nextPage + 1 <= Math.ceil(totalPages) ){
-
-            data.nextPage += 1
-
-            if(data.nextPage != 2) {
-
-                data.prevPage = parseInt(page) - 1
-            }
-
-        }else{
-            data.nextPage = 1
-        }
+        data = await helperFunctions.addPagesData({},page,limit)
 
         //using Model.find() with no filters to fetch all records
         //set a limit on how many records to fetch at once
         // skip value determines how many records to skip (not provide in the response)
+        if(page == 0){
+            data.results = {}
+        }
+        else{
+
         data.results = await Employee.find({})
 
             .limit(limit*1)
             .skip((page-1)*limit)
+        }
 
-
+        console.log(data)
         return data
     }catch(err){
         data.error = err
@@ -136,10 +123,21 @@ async function handleDeleteEmployee(id){
 async function handleGetDepartmentEmployees(deptID,page,limit){
     let data = {}
     try{
+
+        data = await helperFunctions.addPagesData({empDept:deptID},page,limit)
+
         //using Model.find with the given filter to only fetch employees of that department
-        data = await Employee.find({empDept:deptID})
+        if(page == 0){
+            data.results = {}
+            return data
+        }
+        else{
+
+        data.results = await Employee.find({empDept:deptID})
             .limit(limit*1)
             .skip((page-1)*limit)
+        }
+
         //checking if the department with given id exists or not
         if(!helperFunctions.checkDepartmentValidity(deptID)){
             //throwing error with code 101, this code is responsible for "department doesn't exist"
