@@ -1,17 +1,41 @@
-const Employee = require("../models/employee_schema");
-const checkDepartmentValidity = require("../helpers/helper_functions");
-const {ERROR_CODES} = require('../utils/error_codes')
+const Employee = require('../models').Employee
+const helperFunctions = require('../helpers')
+const {ERROR_CODES} = require('../utils')
 
-async function handleGetAllEmployees(page, limit){
+async function handleGetAllEmployees(page, limit ){
 
     let data ={}
     try{
+
+        let totalRecords = await Employee.find()
+            .count()
+
+        let totalPages = totalRecords / limit
+
+        data.nextPage = parseInt(page)
+        console.log(Math.ceil(totalPages))
+
+        if(data.nextPage + 1 <= Math.ceil(totalPages) ){
+
+            data.nextPage += 1
+
+            if(data.nextPage != 2) {
+
+                data.prevPage = parseInt(page) - 1
+            }
+
+        }else{
+            data.nextPage = 1
+        }
+
         //using Model.find() with no filters to fetch all records
         //set a limit on how many records to fetch at once
         // skip value determines how many records to skip (not provide in the response)
-        data = await Employee.find({})
+        data.results = await Employee.find({})
+
             .limit(limit*1)
             .skip((page-1)*limit)
+
 
         return data
     }catch(err){
@@ -117,7 +141,7 @@ async function handleGetDepartmentEmployees(deptID,page,limit){
             .limit(limit*1)
             .skip((page-1)*limit)
         //checking if the department with given id exists or not
-        if(!checkDepartmentValidity(deptID)){
+        if(!helperFunctions.checkDepartmentValidity(deptID)){
             //throwing error with code 101, this code is responsible for "department doesn't exist"
             // (see error handler ERROR_CODES)
             data.error = {}

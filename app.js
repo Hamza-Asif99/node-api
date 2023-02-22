@@ -1,8 +1,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
-const config = require("./config/index")
-const errorHandler = require("./utils/error_handler")
-const catch404 = require("./utils/catch404")
+const config = require("./config")
+
+const utils = require('./utils')
 
 //requiring router
 const employeeRoutes = require('./routes/employee_routes').employeeRouter
@@ -22,7 +22,7 @@ app.listen(config.port,()=>{
 app.use('/employees', employeeRoutes)
 
 //error handler
-app.use(errorHandler)
+app.use(utils.errorHandler)
 //catch all 404
-app.use(catch404)
+app.use(utils.catch404)
 

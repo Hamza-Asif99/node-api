@@ -1,5 +1,5 @@
-const Employee = require("../models/employee_schema");
-const employeeHandler = require("../handlers/employee_handler")
+const employeeHandler = require("../handlers/index").employeeHandler
+
 
 //function responsible for getting all the employees
 
@@ -7,27 +7,23 @@ const employeeHandler = require("../handlers/employee_handler")
 async function getAllEmployees (req,res,next){
 
     //some default values for the page and limit values in case the user does not provide
-        const {page = 1 , limit= 20} = req.query
+        const {page = 1} = req.query
     //check to see if limit values are within a certain bound
-        if(limit > 50 || limit < 10){
-            res.status(400).json({error:"Limit cannot be higher than 50 or lower than 10"})
-        }
+            let limit = 20
 
-        //call the handler if the check pass
-        else{
+            //call the handler if the check pass
             //call handler with the page and limit values
-            let data = await employeeHandler.handleGetAllEmployees(page, limit)
 
+            let data = await employeeHandler.handleGetAllEmployees(page, limit)
             //if empty data array found, this mean that page number query param is too high
-            if(!data.length){
-                res.status(200).json({message: "No Data Found for this page. Lower page number and try again."})
+            if(!data.results || !data.results.length ){
+                res.status(200).json({message: "No Data Found for this page"})
             }
             else if(data.error){
                 next(data.error)
             }else{
                 res.status(200).json({success:"Data Fetched Successfully", data: data})
             }
-        }
 
 }
 
@@ -82,7 +78,7 @@ async function getEmployee(req,res,next){
     if(result.error){
         next(result.error)
     }else{
-        res.status(200).json({success:"Data Fetched Successfully ", employeeData: result})
+        res.status(200).json({success:"Data Fetched Successfully ", data: result})
     }
 }
 
@@ -124,7 +120,7 @@ async function getDepartmentEmployees(req,res,next){
             res.status(200).json({success:"Add Employees to this department to view their data"})
         }
         else{
-            res.status(200).json({success:"Records Fetched ", deptEmployees:data})
+            res.status(200).json({success:"Records Fetched ", data:data})
         }
     }
 

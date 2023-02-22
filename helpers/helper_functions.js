@@ -8,4 +8,4 @@ function checkDepartmentValidity(deptNumber){
     return false
 }
 
-module.exports = checkDepartmentValidity
+module.exports = {checkDepartmentValidity}
