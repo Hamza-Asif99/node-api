@@ -1,6 +1,6 @@
 const Employee = require('../models').Employee
 const helperFunctions = require('../helpers')
-const {ERROR_CODES} = require('../utils')
+const {ERROR_CODES} = require('../utils').codes
 
 async function handleGetAllEmployees(page, limit ){
 

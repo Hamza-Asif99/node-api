@@ -1,5 +1,5 @@
 const employeeHandler = require("../handlers/index").employeeHandler
-
+const {HTTPSTATUS} = require("../utils").codes
 
 //function responsible for getting all the employees
 
@@ -17,12 +17,12 @@ async function getAllEmployees (req,res,next){
             let data = await employeeHandler.handleGetAllEmployees(page, limit)
             //if empty data array found, this mean that page number query param is too high
             if(!data.results.length ){
-                res.status(200).json({message: "No Data Found for this page"})
+                res.status(HTTPSTATUS.OK).json({message: "No Data Found for this page"})
             }
             else if(data.error){
                 next(data.error)
             }else{
-                res.status(200).json({success:"Data Fetched Successfully", data: data})
+                res.status(HTTPSTATUS.OK).json({success:"Data Fetched Successfully", data: data})
             }
 
 }
@@ -33,7 +33,7 @@ async function addEmployee (req,res,next){
 
     //handle absence of a body
     if(!Object.keys(body).length){
-        res.status(422).send({message:"Please send employee details"})
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).send({message:"Please send employee details"})
     }
     else{
 
@@ -43,7 +43,7 @@ async function addEmployee (req,res,next){
             next(result.error)
         }
         else{
-            res.status(201).json({success:"Data Added"})
+            res.status(HTTPSTATUS.CREATED).json({success:"Data Added"})
         }
     }
 }
@@ -55,7 +55,7 @@ async function updateEmployee(req,res,next){
 
     //handle absence of a body
     if(!Object.keys(body).length){
-        res.status(422).send({message:"Please add employee details"})
+        res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).send({message:"Please add employee details"})
     }
     else{
         let result = await employeeHandler.handleUpdateEmployee(id, body)
@@ -78,7 +78,7 @@ async function getEmployee(req,res,next){
     if(result.error){
         next(result.error)
     }else{
-        res.status(200).json({success:"Data Fetched Successfully ", data: result})
+        res.status(HTTPSTATUS.OK).json({success:"Data Fetched Successfully ", data: result})
     }
 }
 
@@ -92,7 +92,7 @@ async function deleteEmployee(req,res,next){
         next(data.error)
     }
     else{
-        res.status(200).json({success:"Employee deleted Successfully"})
+        res.status(HTTPSTATUS.OK).json({success:"Employee deleted Successfully"})
     }
 
 }
@@ -114,10 +114,10 @@ async function getDepartmentEmployees(req,res,next){
         }
         //if department is valid and array is empty, that means no employees exist in that department
         else if(!data.results.length){
-            res.status(200).json({message:"No Data Found for this page"})
+            res.status(HTTPSTATUS.OK).json({message:"No Data Found for this page"})
         }
         else{
-            res.status(200).json({success:"Records Fetched ", data:data})
+            res.status(HTTPSTATUS.OK).json({success:"Records Fetched ", data:data})
         }
 
 }
