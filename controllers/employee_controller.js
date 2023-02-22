@@ -17,7 +17,7 @@ async function getAllEmployees (req,res,next){
             let data = await employeeHandler.handleGetAllEmployees(page, limit)
             //if empty data array found, this mean that page number query param is too high
             if(!data.results.length ){
-                res.status(HTTPSTATUS.OK).json({message: "No Data Found for this page"})
+                res.status(HTTPSTATUS.OK).json({message: "Page Does Not Exist"})
             }
             else if(data.error){
                 next(data.error)

@@ -13,6 +13,9 @@ const ERROR_CODES={
     DEPT_ID_NOT_FOUND:{
         value :"101",
         message: "Department with this ID not found"
+    },
+    DEFAULT:{
+        message: "Something Went Wrong"
     }
 }
 

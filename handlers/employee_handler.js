@@ -12,7 +12,7 @@ async function handleGetAllEmployees(page, limit ){
         //using Model.find() with no filters to fetch all records
         //set a limit on how many records to fetch at once
         // skip value determines how many records to skip (not provide in the response)
-        if(page == 0){
+        if(page <= 0){
             data.results = {}
         }
         else{
@@ -52,7 +52,7 @@ async function handleUpdateEmployee(id, data){
         //find employee matching the params id and update it
         // the {new:true} parameter is used to return the updated doc instead of the original one
 
-        let doc = await Employee.findOneAndUpdate({empID:id}, data , {new:true})
+        let doc = await Employee.findOneAndUpdate({empID:id}, data , {new:true, runValidators:true})
 
         // if no doc returned that means that no employee exists with that id
         if(!doc){
@@ -127,7 +127,7 @@ async function handleGetDepartmentEmployees(deptID,page,limit){
         data = await helperFunctions.addPagesData({empDept:deptID},page,limit)
 
         //using Model.find with the given filter to only fetch employees of that department
-        if(page == 0){
+        if(page <= 0){
             data.results = {}
             return data
         }
