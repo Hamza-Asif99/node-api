@@ -3,6 +3,8 @@ const mongoose = require('mongoose')
 const config = require("./config")
 
 const utils = require('./utils')
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger_output.json')
 
 //requiring router
 const employeeRoutes = require('./routes/employee_routes').employeeRouter
@@ -20,6 +22,9 @@ app.listen(config.port,()=>{
 
 //all the routes in the employee folder
 app.use('/employees', employeeRoutes)
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+
+
 
 //error handler
 app.use(utils.errorHandler)

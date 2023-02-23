@@ -17,8 +17,7 @@ async function handleGetAllEmployees(page, limit ){
         }
         else{
 
-        data.results = await Employee.find({})
-
+        data.results = await Employee.find({},{_id:0})
             .limit(limit*1)
             .skip((page-1)*limit)
         }
@@ -32,6 +31,7 @@ async function handleGetAllEmployees(page, limit ){
 }
 
 async function handleAddEmployee(dataToAdd){
+
     let result = {}
     try{
         //inserting the record into the db
@@ -76,7 +76,7 @@ async function handleGetEmployee(id){
     let result = {}
     try{
         //using Model.findOne to find employee with given id
-        let data = await Employee.findOne({empID: id})
+        let data = await Employee.findOne({empID: id},{_id:0})
         //if data is null, that means the employee could not be found
         if(!data){
             // let error = new Error()
@@ -133,7 +133,7 @@ async function handleGetDepartmentEmployees(deptID,page,limit){
         }
         else{
 
-        data.results = await Employee.find({empDept:deptID})
+        data.results = await Employee.find({empDept:deptID},{_id:0})
             .limit(limit*1)
             .skip((page-1)*limit)
         }

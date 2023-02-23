@@ -29,6 +29,7 @@ async function getAllEmployees (req,res,next){
 
 //function to add an employee
 async function addEmployee (req,res,next){
+
     let {body} = req
 
     //handle absence of a body
