@@ -1,6 +1,32 @@
 const Employee = require('../models').Employee
 const helperFunctions = require('../helpers')
 const {ERROR_CODES} = require('../utils').codes
+const jwt = require('jsonwebtoken')
+const {tokenManagement} = require('../utils')
+//auth handlers
+
+async function handleLogin(){
+
+    let data={}
+    try{
+
+        let user = {
+            userName: "hamza",
+            userRole: "admin",
+            userEmail: "hamza@hamza.com"
+        }
+
+        let token = tokenManagement.createToken(user)
+        data.token = token
+        return data
+
+    }catch(err){
+        data.error = err
+        return data
+    }
+
+}
+
 
 async function handleGetAllEmployees(page, limit ){
 
@@ -22,7 +48,6 @@ async function handleGetAllEmployees(page, limit ){
             .skip((page-1)*limit)
         }
 
-        console.log(data)
         return data
     }catch(err){
         data.error = err
@@ -79,7 +104,6 @@ async function handleGetEmployee(id){
         let data = await Employee.findOne({empID: id},{_id:0})
         //if data is null, that means the employee could not be found
         if(!data){
-            // let error = new Error()
             //throwing error with code 100, this code handles "id not found error" (see error handler ERROR_CODES)
             result.error = {}
             result.error.code = ERROR_CODES.EMP_ID_NOT_FOUND.value
@@ -92,7 +116,6 @@ async function handleGetEmployee(id){
     }catch(err){
         result.error = err
         return result
-        // next(err)
     }
 
 }
@@ -164,5 +187,6 @@ module.exports ={
     handleUpdateEmployee,
     handleGetEmployee,
     handleDeleteEmployee,
-    handleGetDepartmentEmployees
+    handleGetDepartmentEmployees,
+    handleLogin,
 }

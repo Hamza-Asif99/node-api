@@ -8,6 +8,11 @@ const config ={
 
     },
 
+    //define the time after which the number of possible requests are reset
+    rateLimiterTimeout: 15,
+    token_secret:'secrettareeenkeyveryverysecretohgodwowo',
+    tokenExpiry: 15*60*1000
+
 
 }
 

@@ -16,6 +16,13 @@
   "schemes": [
     "http"
   ],
+  "securityDefinitions": {
+    "api_key": {
+      "type": "apiKey",
+      "name": "ACCESS_TOKEN",
+      "in": "cookie"
+    }
+  },
   "consumes": [
     "application/json"
   ],
@@ -23,6 +30,31 @@
     "application/json"
   ],
   "paths": {
+    "/employees/login": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Endpoint to login",
+        "parameters": [],
+        "responses": {},
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/employees/logout": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "Endpoint to logout",
+        "parameters": [],
+        "responses": {}
+      }
+    },
     "/employees/": {
       "get": {
         "tags": [

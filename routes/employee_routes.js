@@ -2,9 +2,28 @@ const express = require('express')
 const {employeeHandler} = require("../handlers");
 const employeeRouter = express.Router()
 const employeeController = require('../controllers').employeeController
+const {tokenManagement} = require('../utils')
+
+//employee auth routes
+employeeRouter.get('/login',tokenManagement.verifyToken,function(req,res,next){
+    /* 	#swagger.tags = ['Employee']
+           #swagger.description = 'Endpoint to login' */
+
+    /* #swagger.security = [{
+               "api_key": []
+      }] */
+    employeeController.login(req,res,next)
+})
+
+employeeRouter.get('/logout',tokenManagement.verifyToken,function(req,res,next){
+    /* 	#swagger.tags = ['Employee']
+           #swagger.description = 'Endpoint to logout' */
+
+    employeeController.logout(req,res,next)
+})
 
 //get all employees
-employeeRouter.get('/', function(req,res,next){
+employeeRouter.get('/',tokenManagement.verifyToken ,function(req,res,next){
     /* 	#swagger.tags = ['Employee']
             #swagger.description = 'Endpoint to get paginated list of all employees' */
 
@@ -17,7 +36,7 @@ employeeRouter.get('/', function(req,res,next){
 })
 
 //add a new employee
-employeeRouter.post('/',function(req,res,next){
+employeeRouter.post('/', tokenManagement.verifyToken ,function(req,res,next){
 
     /* 	#swagger.tags = ['Employee']
             #swagger.description = 'Endpoint to add an employee' */
@@ -35,7 +54,7 @@ employeeRouter.post('/',function(req,res,next){
 })
 
 //edit specific employee with their id
-employeeRouter.put('/:id',function (req,res,next){
+employeeRouter.put('/:id',tokenManagement.verifyToken,function (req,res,next){
     /* 	#swagger.tags = ['Employee']
            #swagger.description = 'Edit a specific employee' */
 
@@ -52,7 +71,7 @@ employeeRouter.put('/:id',function (req,res,next){
 })
 
 //get specific employee with their id
-employeeRouter.get('/:id',function(req,res,next){
+employeeRouter.get('/:id',tokenManagement.verifyToken,function(req,res,next){
     /* 	#swagger.tags = ['Employee']
            #swagger.description = 'Endpoint to get a specific employee' */
 
@@ -60,7 +79,7 @@ employeeRouter.get('/:id',function(req,res,next){
 })
 
 //delete an employee with their id
-employeeRouter.delete('/:id',function(req,res,next){
+employeeRouter.delete('/:id',tokenManagement.verifyToken,function(req,res,next){
 
     /* 	#swagger.tags = ['Employee']
            #swagger.description = 'Endpoint to delete a specific employee' */
@@ -69,7 +88,7 @@ employeeRouter.delete('/:id',function(req,res,next){
 })
 
 //get employees for a specific department, implements indexing for faster query
-employeeRouter.get('/department/:id',function(req,res,next){
+employeeRouter.get('/department/:id',tokenManagement.verifyToken,function(req,res,next){
     /* 	#swagger.tags = ['Employee']
            #swagger.description = 'Endpoint to get paginated list of employees of a specific department' */
 
@@ -80,4 +99,4 @@ employeeRouter.get('/department/:id',function(req,res,next){
     employeeController.getDepartmentEmployees(req,res,next)
 })
 
-module.exports = {employeeRouter: employeeRouter}
+module.exports = employeeRouter
