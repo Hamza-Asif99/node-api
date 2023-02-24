@@ -1,11 +1,17 @@
 const express = require('express')
-const {employeeHandler} = require("../handlers");
 const employeeRouter = express.Router()
 const employeeController = require('../controllers').employeeController
 const {tokenManagement} = require('../utils')
 
 //employee auth routes
 employeeRouter.get('/login',tokenManagement.verifyToken,function(req,res,next){
+    //  ****NOTE****
+
+    //all routes include these swagger tags to add details to the swagger docs.
+    //they must be included in the callback here. using them in the controller function
+    // does not work.
+
+
     /* 	#swagger.tags = ['Employee']
            #swagger.description = 'Endpoint to login' */
 

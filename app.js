@@ -12,7 +12,6 @@ const swaggerFile = require('./swagger_output.json')
 const security = require('./security')
 //requiring router
 const employeeRoutes = require('./routes/employee_routes')
-const authRoutes = require('./routes')
 //connection string
 const connection = mongoose.connect(config.dbConfig.connectionString+config.dbConfig.dbName, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -33,6 +32,8 @@ app.listen(config.port,()=>{
 
 //all the routes in the employee folder
 app.use('/employees', employeeRoutes)
+
+//swagger docs mounted on /doc, using the same port as the application
 app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 
