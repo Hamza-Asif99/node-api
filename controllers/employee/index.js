@@ -37,31 +37,31 @@ async function logout(req,res,next){
 
 //an experimental route to see how it effects performance and how to tackle large queries
 async function getAllEmployees (req,res,next){
-            //if user did not send cookie with token or if the token did not return a user
-            // after being decoded
-            if(req.unauthenticated){
-                res.status(HTTPSTATUS.UNAUTHORIZED).json({error:"Login in to make this request"})
-            }
-            else {
+    //if user did not send cookie with token or if the token did not return a user
+    // after being decoded
+    if(req.unauthenticated){
+        res.status(HTTPSTATUS.UNAUTHORIZED).json({error:"Login in to make this request"})
+    }
+    else {
 
-                //some default values for the page and limit values in case the user does not provide
-                const {page = 1} = req.query
-                //check to see if limit values are within a certain bound
-                let limit = 20
+        //some default values for the page and limit values in case the user does not provide
+        const {page = 1} = req.query
+        //check to see if limit values are within a certain bound
+        let limit = 20
 
-                //call the handler if the check pass
-                //call handler with the page and limit values
+        //call the handler if the check pass
+        //call handler with the page and limit values
 
-                let data = await employeeHandler.handleGetAllEmployees(page, limit)
-                //if empty data array found, this mean that page number query param is too high
-                if (!data.results.length) {
-                    res.status(HTTPSTATUS.OK).json({message: "Page Does Not Exist"})
-                } else if (data.error) {
-                    next(data.error)
-                } else {
-                    res.status(HTTPSTATUS.OK).json({success: "Data Fetched Successfully", data: data})
-                }
-            }
+        let data = await employeeHandler.handleGetAllEmployees(page, limit)
+        //if empty data array found, this mean that page number query param is too high
+        if (!data.results.length) {
+            res.status(HTTPSTATUS.OK).json({message: "Page Does Not Exist"})
+        } else if (data.error) {
+            next(data.error)
+        } else {
+            res.status(HTTPSTATUS.OK).json({success: "Data Fetched Successfully", data: data})
+        }
+    }
 
 }
 
@@ -101,6 +101,8 @@ async function updateEmployee(req,res,next){
         let {id} = req.params
 
         //handle absence of a body
+
+        //this is handled in the handler with individual error thrown for each field
         if (!Object.keys(body).length) {
             res.status(HTTPSTATUS.UNPROCESSABLE_ENTITY).send({message: "Please add employee details"})
         } else {

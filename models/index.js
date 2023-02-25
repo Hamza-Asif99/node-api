@@ -1,3 +1,3 @@
-const Employee = require('./employee_schema')
+const Employee = require('./employee')
 
 module.exports={Employee}

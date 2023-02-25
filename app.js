@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const config = require("./config")
-
+const morgan = require("morgan")
 const utils = require('./utils')
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('./swagger_output.json')
@@ -11,13 +11,15 @@ const swaggerFile = require('./swagger_output.json')
 //rate limiter
 const security = require('./security')
 //requiring router
-const employeeRoutes = require('./routes/employee_routes')
+const employeeRoutes = require('./routes/employee')
 //connection string
 const connection = mongoose.connect(config.dbConfig.connectionString+config.dbConfig.dbName, { useNewUrlParser: true, useUnifiedTopology: true });
 
 
 let app = express()
 app.use(cookieParser())
+
+app.use(morgan("tiny"))
 //security middleware
 app.use(cors())
 app.use(security.limiter)

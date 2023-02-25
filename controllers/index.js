@@ -1,5 +1,5 @@
 
-const employeeController = require('./employee_controller')
+const employeeController = require('./employee')
 
 
 module.exports = {employeeController}

@@ -1,7 +1,6 @@
-const Employee = require('../models').Employee
+const {Employee} = require('../models')
 const helperFunctions = require('../helpers')
 const {ERROR_CODES} = require('../utils').codes
-const jwt = require('jsonwebtoken')
 const {tokenManagement} = require('../utils')
 //auth handlers
 
@@ -43,9 +42,9 @@ async function handleGetAllEmployees(page, limit ){
         }
         else{
 
-        data.results = await Employee.find({},{_id:0})
-            .limit(limit*1)
-            .skip((page-1)*limit)
+            data.results = await Employee.find({},{_id:0})
+                .limit(limit*1)
+                .skip((page-1)*limit)
         }
 
         return data
@@ -156,9 +155,9 @@ async function handleGetDepartmentEmployees(deptID,page,limit){
         }
         else{
 
-        data.results = await Employee.find({empDept:deptID},{_id:0})
-            .limit(limit*1)
-            .skip((page-1)*limit)
+            data.results = await Employee.find({empDept:deptID},{_id:0})
+                .limit(limit*1)
+                .skip((page-1)*limit)
         }
 
         //checking if the department with given id exists or not

@@ -1,4 +1,4 @@
-const employeeRouter = require('./employee_routes')
+const employeeRouter = require('./employee')
 
 module.exports= {
     employeeRouter,

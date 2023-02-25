@@ -6,7 +6,7 @@ function errorHandler(err, req, res, next){
     }
     const error_key = getMessage(err.code, ERROR_CODES)
 
-        res.status(HTTPSTATUS.BAD_REQUEST).send({error:ERROR_CODES[error_key].message})
+    res.status(HTTPSTATUS.BAD_REQUEST).send({error:ERROR_CODES[error_key].message})
 
 
 }
